@@ -148,7 +148,7 @@ if errorlevel 1 (
     echo.
     echo [成功] Claude Code 已启动，临时文件已清理
     echo.
-    :: 等待10秒后自动关闭
-    ping -n 11 127.0.0.1 >nul
+    :: 等待1秒后自动关闭
+    ping -n 2 127.0.0.1 >nul
     exit
 )
