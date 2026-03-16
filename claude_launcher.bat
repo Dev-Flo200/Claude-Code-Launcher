@@ -17,7 +17,10 @@ set "TEMP_RESULT=%TEMP%\claude_result_%RANDOM_ID%.txt"
 set MAX_DIR=0
 :count_dirs
 set /a MAX_DIR+=1
-if defined DIR_!MAX_DIR! goto count_dirs
+if !MAX_DIR! LSS 100 (
+    call set "VAR_NAME=DIR_%%MAX_DIR%%"
+    if defined !VAR_NAME! goto count_dirs
+)
 set /a MAX_DIR-=1
 
 :: ====== 功能1: 选择工作目录 ======
@@ -30,7 +33,6 @@ echo       Claude Code 启动器
 echo ========================================
 echo 工作目录：
 echo.
-
 echo [1/2] 请选择工作目录
 echo.
 
@@ -43,7 +45,7 @@ echo.
 
 :: 调用 PowerShell 菜单组件，传递临时文件名
 del "!TEMP_RESULT!" 2>nul
-powershell -NoProfile -ExecutionPolicy Bypass -Command "& '.\claude_menu.ps1' '!TEMP_MENU!' '!TEMP_RESULT!'"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& '%~dp0claude_menu.ps1' '!TEMP_MENU!' '!TEMP_RESULT!'"
 chcp 65001 >nul
 
 :: 读取返回值并检查
@@ -95,7 +97,7 @@ echo.
 
 :: 调用 PowerShell 菜单组件，传递临时文件名
 del "!TEMP_RESULT!" 2>nul
-powershell -NoProfile -ExecutionPolicy Bypass -Command "& '.\claude_menu.ps1' '!TEMP_MENU!' '!TEMP_RESULT!'"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& '%~dp0claude_menu.ps1' '!TEMP_MENU!' '!TEMP_RESULT!'"
 chcp 65001 >nul
 
 :: 读取返回值并检查
