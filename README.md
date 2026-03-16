@@ -1,4 +1,4 @@
-# Claude Code 启动器
+# Claude Code 启动器（Windows）
 
 通过交互式菜单快速启动 Claude Code。
 
@@ -28,8 +28,8 @@ set "DIR_3=E:\Project\Demo"
    - 先选工作目录，再选会话模式
 
 4. **会话模式**：
-   - 继续上次会话：用 `claude -c` 恢复之前的对话
    - 新建会话：用 `claude` 全新开始
+   - 继续上次会话：用 `claude -c` 恢复之前的对话
 
 ## 效果预览
 
