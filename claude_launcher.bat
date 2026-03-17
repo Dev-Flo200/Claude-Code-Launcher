@@ -13,10 +13,6 @@ set "RANDOM_ID=%RANDOM%"
 set "TEMP_MENU=%TEMP%\claude_menu_%RANDOM_ID%.txt"
 set "TEMP_RESULT=%TEMP%\claude_result_%RANDOM_ID%.txt"
 
-:: 清理上次的 debug 日志
-del "%TEMP%\claude_debug.log" 2>nul
-echo [DEBUG BAT] Script started >> "%TEMP%\claude_debug.log"
-
 :: 自动检测目录数量（自动统计已配置的 DIR_* 变量数量）
 set MAX_DIR=0
 :count_dirs
@@ -49,14 +45,11 @@ echo.
 
 :: 调用 PowerShell 菜单组件，传递临时文件名
 del "!TEMP_RESULT!" 2>nul
-echo [DEBUG BAT] Calling PowerShell, TEMP_RESULT=!TEMP_RESULT! >> "%TEMP%\claude_debug.log"
 powershell -NoProfile -ExecutionPolicy Bypass -Command "& '%~dp0claude_menu.ps1' '!TEMP_MENU!' '!TEMP_RESULT!'"
 chcp 65001 >nul
 
 :: 读取返回值并检查
 set /p IDX=<"!TEMP_RESULT!"
-echo [DEBUG BAT] After read, IDX='!IDX!' >> "%TEMP%\claude_debug.log"
-echo [DEBUG BAT] After read, IDX='!IDX!'
 if not defined IDX goto func1_loop
 
 :: 处理选择结果
@@ -65,8 +58,6 @@ if "%IDX%"=="0" (
 ) else (
     call set "WORKDIR=!DIR_%IDX%!"
 )
-
-echo [DEBUG BAT] WORKDIR set to: '!WORKDIR!' >> "%TEMP%\claude_debug.log"
 
 :: 检查目录是否存在，不存在则提示重新选择
 if exist "!WORKDIR!" goto func1_ok
@@ -95,7 +86,7 @@ echo.
 
 echo [2/2] 是否继续上次会话？
 echo.
-powershell -NoProfile -Command "Write-Host '提示：若该工作目录未在 Claude 中使用过，选择"继续上次会话"会直接退出' -ForegroundColor Yellow"
+echo   注意: 若该工作目录未在 Claude 中使用过，选择"继续上次会话"会直接退出
 echo.
 
 :: 创建选项文件（提示+选项）
@@ -107,13 +98,11 @@ echo.
 
 :: 调用 PowerShell 菜单组件，传递临时文件名
 del "!TEMP_RESULT!" 2>nul
-echo [DEBUG BAT] Calling PowerShell for func2, TEMP_RESULT=!TEMP_RESULT! >> "%TEMP%\claude_debug.log"
 powershell -NoProfile -ExecutionPolicy Bypass -Command "& '%~dp0claude_menu.ps1' '!TEMP_MENU!' '!TEMP_RESULT!'"
 chcp 65001 >nul
 
 :: 读取返回值并检查
 set /p IDX=<"!TEMP_RESULT!"
-echo [DEBUG BAT] func2 After read, IDX='!IDX!' >> "%TEMP%\claude_debug.log"
 if not defined IDX goto show_func2
 
 :: 设置启动命令（0=新建，1=继续）
