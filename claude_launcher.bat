@@ -95,7 +95,7 @@ echo.
 
 echo [2/2] 是否继续上次会话？
 echo.
-echo 提示：若该目录未在 Claude 中沟通过，选择"继续上次会话"会报错
+powershell -NoProfile -Command "Write-Host '提示：若该工作目录未在 Claude 中使用过，选择"继续上次会话"会直接退出' -ForegroundColor Yellow"
 echo.
 
 :: 创建选项文件（提示+选项）
