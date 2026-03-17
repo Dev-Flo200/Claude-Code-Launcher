@@ -93,7 +93,12 @@ while ($true) {
 
 [Console]::CursorVisible = $true
 
-# 写入返回值文件（供 bat 脚本读取选中索引）
-$selected | Out-File -FilePath $ResultFile -Encoding UTF8
+# 写入返回值文件（供 bat 脚本读取选中索引）- 使用同步写入确保文件完全写入
+[System.IO.File]::WriteAllText($ResultFile, $selected.ToString(), [System.Text.Encoding]::UTF8)
+
+# Debug: 输出调试信息
+$debugMsg = "[DEBUG PS] selected=$selected, ResultFile=$ResultFile"
+$debugMsg | Out-File -FilePath "$env:TEMP\claude_debug.log" -Encoding UTF8 -Append
+Write-Host $debugMsg -ForegroundColor Yellow
 
 exit $selected

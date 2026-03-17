@@ -3,8 +3,8 @@ setlocal enabledelayedexpansion
 
 :: ====== 常用目录配置 ======
 :: 在此添加你的常用项目目录，格式：set "DIR_序号=目录路径"
-set "DIR_1=E:\xxx\xxx"
-set "DIR_2=E:\xxx\xx"
+set "DIR_1=E:\Project_ALL\ClaudeWork"
+set "DIR_2=E:\Documents\notes"
 
 :: ==========================
 
@@ -12,6 +12,10 @@ set "DIR_2=E:\xxx\xx"
 set "RANDOM_ID=%RANDOM%"
 set "TEMP_MENU=%TEMP%\claude_menu_%RANDOM_ID%.txt"
 set "TEMP_RESULT=%TEMP%\claude_result_%RANDOM_ID%.txt"
+
+:: 清理上次的 debug 日志
+del "%TEMP%\claude_debug.log" 2>nul
+echo [DEBUG BAT] Script started >> "%TEMP%\claude_debug.log"
 
 :: 自动检测目录数量（自动统计已配置的 DIR_* 变量数量）
 set MAX_DIR=0
@@ -45,20 +49,24 @@ echo.
 
 :: 调用 PowerShell 菜单组件，传递临时文件名
 del "!TEMP_RESULT!" 2>nul
+echo [DEBUG BAT] Calling PowerShell, TEMP_RESULT=!TEMP_RESULT! >> "%TEMP%\claude_debug.log"
 powershell -NoProfile -ExecutionPolicy Bypass -Command "& '%~dp0claude_menu.ps1' '!TEMP_MENU!' '!TEMP_RESULT!'"
 chcp 65001 >nul
 
 :: 读取返回值并检查
 set /p IDX=<"!TEMP_RESULT!"
+echo [DEBUG BAT] After read, IDX='!IDX!' >> "%TEMP%\claude_debug.log"
+echo [DEBUG BAT] After read, IDX='!IDX!'
 if not defined IDX goto func1_loop
 
 :: 处理选择结果
 if "%IDX%"=="0" (
     set "WORKDIR=!CD!"
 ) else (
-    set "VAR_NAME=DIR_!IDX!"
-    call set "WORKDIR=!%VAR_NAME%!"
+    call set "WORKDIR=!DIR_%IDX%!"
 )
+
+echo [DEBUG BAT] WORKDIR set to: '!WORKDIR!' >> "%TEMP%\claude_debug.log"
 
 :: 检查目录是否存在，不存在则提示重新选择
 if exist "!WORKDIR!" goto func1_ok
@@ -99,11 +107,13 @@ echo.
 
 :: 调用 PowerShell 菜单组件，传递临时文件名
 del "!TEMP_RESULT!" 2>nul
+echo [DEBUG BAT] Calling PowerShell for func2, TEMP_RESULT=!TEMP_RESULT! >> "%TEMP%\claude_debug.log"
 powershell -NoProfile -ExecutionPolicy Bypass -Command "& '%~dp0claude_menu.ps1' '!TEMP_MENU!' '!TEMP_RESULT!'"
 chcp 65001 >nul
 
 :: 读取返回值并检查
 set /p IDX=<"!TEMP_RESULT!"
+echo [DEBUG BAT] func2 After read, IDX='!IDX!' >> "%TEMP%\claude_debug.log"
 if not defined IDX goto show_func2
 
 :: 设置启动命令（0=新建，1=继续）
