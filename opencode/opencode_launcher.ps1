@@ -1,6 +1,5 @@
 ﻿# OpenCode 启动器 Configuration
 $PresetDirs = @(
-    'E:\Project_ALL\ClaudeWork2222',
     'E:\Project_ALL\ClaudeWork',
     'E:\Documents\notes'
 )
@@ -153,12 +152,15 @@ function Main {
         Write-Host ''
         Write-Host '[错误] 未找到OpenCode命令' -ForegroundColor Red
         Write-Host '请确保OpenCode已安装并在PATH中' -ForegroundColor Red
-        Write-Host ''
-        Write-Host '按任意键退出...' -ForegroundColor Gray
-        [Console]::ReadKey($true) | Out-Null
+        Pop-Location
+        exit 1
     }
     
     Pop-Location
+    if ($LASTEXITCODE -ne 0) {
+        exit 1
+    }
+    exit 0
 }
 
 Main
